@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <!--
+      Added 26/08 alongside a security pass on this static (output: "single", no server of its
+      own) GitHub Pages site. This is the only defense-in-depth available against a stored/
+      reflected XSS reading the Supabase session out of localStorage (src/lib/supabase.ts persists
+      it there via AsyncStorage's web shim - there is no HttpOnly-cookie option without a backend
+      to issue them). CSP does not fix that storage choice; it narrows how a script could ever get
+      running here to try.
+
+      This file, not src/app/+html.tsx, is the real customization point: +html.tsx only applies
+      under web.output "static" (per-route static rendering) - this app uses "single" (SPA), whose
+      HTML shell comes from Metro's own default template
+      (node_modules/expo/node_modules/@expo/cli/static/template/index.html), which `public/*`
+      overrides. Confirmed by rebuilding with only a +html.tsx present: it had zero effect on
+      dist/index.html; this file does.
+
+      style-src needs 'unsafe-inline': react-native-web injects its dynamic stylesheet as a
+      runtime-created <style> tag (not a `style="..."` attribute - that's style-src-attr), and
+      there's no nonce wired through this build to avoid it; without it the app renders unstyled.
+      connect/script/frame-src for challenges.cloudflare.com is Turnstile's widget script, its
+      verification XHR, and the iframe it renders (see CaptchaHost.web.tsx / lib/captcha.ts).
+      Google Sign-In on web (use-google-auth-web.ts) is a plain top-level `signInWithOAuth`
+      redirect, not a popup or an embedded script/iframe - CSP has no directive restricting a
+      top-level navigation, so accounts.google.com needs no entry here.
+    -->
+    <meta
+      httpEquiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>sitter</title>
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+  <link rel="icon" href="/sitter/favicon.ico" /></head>
+
+  <body>
+    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  <script src="/sitter/_expo/static/js/web/entry-e72a3a9fbc6df62c1749cb2d329278a3.js" defer></script>
+</body>
+</html>
