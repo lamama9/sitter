@@ -2,9 +2,9 @@
   "app": "sitter",
   "version": "0.3.32",
   "baseUrl": "/sitter",
-  "builtAt": "2026-09-28T10:39:08.835Z",
-  "commit": "c10339e021b59c8074c0d063d198f366eeb259df",
+  "builtAt": "2026-09-28T19:17:36.585Z",
+  "commit": "515412812f1f2195e605e687a60d000c9af9305a",
   "dirty": true,
-  "sourceTreeHash": "89738c04e93d959dbbb43620dcafb4f368df8d6f90d9cea3ad4502f613379250",
-  "sourceFileCount": 372
+  "sourceTreeHash": "8ebe24759f07b597806488d53f58ca0fe63cca372492c9b093e6c566123a1159",
+  "sourceFileCount": 374
 }
